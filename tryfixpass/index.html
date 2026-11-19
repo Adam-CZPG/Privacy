@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TryFixPass</title>
+<meta name="robots" content="noindex">
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #1B2340; color: #fff; font-family: system-ui, sans-serif; text-align: center; padding: 24px; box-sizing: border-box; }
+  .box { max-width: 380px; }
+  h1 { font-size: 28px; margin: 18px 0 8px; }
+  p { color: #C9D2EE; line-height: 1.45; margin: 0 0 22px; }
+  a.btn { display: block; padding: 15px; border-radius: 16px; font-weight: 800; font-size: 18px; text-decoration: none; margin-top: 12px; }
+  .open { background: #2FBF83; color: #fff; }
+  .get { background: #FFD84D; color: #1B2340; }
+</style>
+</head>
+<body>
+<div class="box">
+  <svg width="132" height="60" viewBox="0 0 1024 470" aria-hidden="true"><g transform="translate(-60,-277)"><circle cx="205" cy="512" r="82" fill="none" stroke="#fff" stroke-width="58"/><circle cx="440" cy="512" r="102" fill="#FFD84D"/><circle cx="748" cy="512" r="184" fill="#2FBF83"/><path d="M655 512 L727 584 L850 440" fill="none" stroke="#fff" stroke-width="62" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+  <h1 id="t">Výzva v TryFixPass</h1>
+  <p id="d">Kamarád ti poslal výzvu. Otevři ji v aplikaci TryFixPass.</p>
+  <a class="btn open" id="open" href="#">Otevřít v aplikaci</a>
+  <a class="btn get" id="get" href="https://play.google.com/store/apps/details?id=com.gbline.gbexam">Stáhnout z Google Play</a>
+</div>
+<script>
+// Duel / follow links from the TryFixPass app: …/tryfixpass/#/d?d=CODE or #/f?c=CODE.
+// Only the code is passed on to the app; nothing is stored or sent anywhere.
+(function () {
+  var PLAY = 'https://play.google.com/store/apps/details?id=com.gbline.gbexam';
+  var h = location.hash || '';
+  var m = h.match(/#\/(d|f)\?(d|c)=([A-Za-z0-9_-]{1,4000})/);
+  var en = !/^(cs|sk)/i.test(navigator.language || '');
+  if (en) {
+    document.documentElement.lang = 'en';
+    document.getElementById('t').textContent = 'TryFixPass challenge';
+    document.getElementById('d').textContent = 'A friend sent you a challenge. Open it in the TryFixPass app.';
+    document.getElementById('open').textContent = 'Open in the app';
+    document.getElementById('get').textContent = 'Get it on Google Play';
+  }
+  if (!m) { document.getElementById('open').style.display = 'none'; return; }
+  var path = m[1] + '?' + m[2] + '=' + m[3];
+  var app = 'gbexam://' + path;
+  var isAndroid = /Android/i.test(navigator.userAgent);
+  var url = isAndroid
+    ? 'intent://' + path + '#Intent;scheme=gbexam;package=com.gbline.gbexam;S.browser_fallback_url=' + encodeURIComponent(PLAY) + ';end'
+    : app;
+  document.getElementById('open').href = url;
+  if (isAndroid) location.replace(url);
+})();
+</script>
+</body>
+</html>
